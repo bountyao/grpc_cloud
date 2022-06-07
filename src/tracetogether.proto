@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package tracetogether;
+
+service TraceTogether {
+    rpc CheckStatus (Request) returns (Reply) {}
+  }
+
+  message Request {
+    string name = 1;
+  }
+
+  message Reply {
+    string message = 1;
+  }
