@@ -1,4 +1,4 @@
-#server
+# server
 
 from concurrent import futures
 import logging
@@ -6,9 +6,11 @@ import grpc
 import tracetogether_pb2
 import tracetogether_pb2_grpc
 
+
 class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
-    def CheckStatus(self, request, context):
-        return tracetogether_pb2.Reply(message='Success, %s' % request.name)
+    def CheckIn(self, request, context):
+        return tracetogether_pb2.Reply(message='{}, {} successfully checked in at {} on {}'.format(request.name, request.nric, request.location, request.time))
+
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
@@ -17,6 +19,7 @@ def serve():
     server.start()
     print("Server is running")
     server.wait_for_termination()
+
 
 if __name__ == '__main__':
     logging.basicConfig()
