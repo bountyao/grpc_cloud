@@ -19,6 +19,11 @@ class TraceTogetherStub(object):
                 request_serializer=tracetogether__pb2.Request.SerializeToString,
                 response_deserializer=tracetogether__pb2.Reply.FromString,
                 )
+        self.Test = channel.unary_stream(
+                '/tracetogether.TraceTogether/Test',
+                request_serializer=tracetogether__pb2.Request.SerializeToString,
+                response_deserializer=tracetogether__pb2.Reply.FromString,
+                )
 
 
 class TraceTogetherServicer(object):
@@ -30,11 +35,22 @@ class TraceTogetherServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def Test(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_TraceTogetherServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'CheckIn': grpc.unary_unary_rpc_method_handler(
                     servicer.CheckIn,
+                    request_deserializer=tracetogether__pb2.Request.FromString,
+                    response_serializer=tracetogether__pb2.Reply.SerializeToString,
+            ),
+            'Test': grpc.unary_stream_rpc_method_handler(
+                    servicer.Test,
                     request_deserializer=tracetogether__pb2.Request.FromString,
                     response_serializer=tracetogether__pb2.Reply.SerializeToString,
             ),
@@ -60,6 +76,23 @@ class TraceTogether(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/tracetogether.TraceTogether/CheckIn',
+            tracetogether__pb2.Request.SerializeToString,
+            tracetogether__pb2.Reply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Test(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/tracetogether.TraceTogether/Test',
             tracetogether__pb2.Request.SerializeToString,
             tracetogether__pb2.Reply.FromString,
             options, channel_credentials,

@@ -5,11 +5,23 @@ import logging
 import grpc
 import tracetogether_pb2
 import tracetogether_pb2_grpc
+import time
 
 
 class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
+
+    # Check in
     def CheckIn(self, request, context):
-        return tracetogether_pb2.Reply(message='{}, {} successfully checked in at {} on {}'.format(request.name, request.nric, request.location, request.time))
+        return tracetogether_pb2.Reply(
+            message='{}, {} successfully checked in at {} on {}'.format(request.name, request.nric, request.location,
+                                                                        request.time))
+
+    # Test concurrency
+    def Test(self, request, context):
+        for i in range(10):
+            yield tracetogether_pb2.Reply(message='Message {}'.format(i))
+            time.sleep(1)
+
 
 
 def serve():

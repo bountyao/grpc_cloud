@@ -4,6 +4,7 @@ package tracetogether;
 
 service TraceTogether {
     rpc CheckIn (Request) returns (Reply) {}
+    rpc Test (Request) returns (stream Reply) {}
   }
 
   message Request {
@@ -11,6 +12,7 @@ service TraceTogether {
     string nric = 2;
     string location = 3;
     string time = 4;
+    string test = 5;
   }
 
   message Reply {
