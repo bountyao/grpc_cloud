@@ -15,6 +15,7 @@ def serve():
     tracetogether_pb2_grpc.add_TraceTogetherServicer_to_server(TraceTogether(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
+    print("Server is running")
     server.wait_for_termination()
 
 if __name__ == '__main__':
