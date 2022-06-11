@@ -14,8 +14,8 @@ class TraceTogetherStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.CheckStatus = channel.unary_unary(
-                '/tracetogether.TraceTogether/CheckStatus',
+        self.CheckIn = channel.unary_unary(
+                '/tracetogether.TraceTogether/CheckIn',
                 request_serializer=tracetogether__pb2.Request.SerializeToString,
                 response_deserializer=tracetogether__pb2.Reply.FromString,
                 )
@@ -24,7 +24,7 @@ class TraceTogetherStub(object):
 class TraceTogetherServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def CheckStatus(self, request, context):
+    def CheckIn(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -33,8 +33,8 @@ class TraceTogetherServicer(object):
 
 def add_TraceTogetherServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'CheckStatus': grpc.unary_unary_rpc_method_handler(
-                    servicer.CheckStatus,
+            'CheckIn': grpc.unary_unary_rpc_method_handler(
+                    servicer.CheckIn,
                     request_deserializer=tracetogether__pb2.Request.FromString,
                     response_serializer=tracetogether__pb2.Reply.SerializeToString,
             ),
@@ -49,7 +49,7 @@ class TraceTogether(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def CheckStatus(request,
+    def CheckIn(request,
             target,
             options=(),
             channel_credentials=None,
@@ -59,7 +59,7 @@ class TraceTogether(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/tracetogether.TraceTogether/CheckStatus',
+        return grpc.experimental.unary_unary(request, target, '/tracetogether.TraceTogether/CheckIn',
             tracetogether__pb2.Request.SerializeToString,
             tracetogether__pb2.Reply.FromString,
             options, channel_credentials,

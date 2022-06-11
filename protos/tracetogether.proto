@@ -3,11 +3,14 @@ syntax = "proto3";
 package tracetogether;
 
 service TraceTogether {
-    rpc CheckStatus (Request) returns (Reply) {}
+    rpc CheckIn (Request) returns (Reply) {}
   }
 
   message Request {
     string name = 1;
+    string nric = 2;
+    string location = 3;
+    string time = 4;
   }
 
   message Reply {
