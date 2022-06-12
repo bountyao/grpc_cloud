@@ -49,6 +49,11 @@ class TraceTogetherStub(object):
                 request_serializer=tracetogether__pb2.Request.SerializeToString,
                 response_deserializer=tracetogether__pb2.Reply.FromString,
                 )
+        self.AddCovidLocation = channel.unary_unary(
+                '/tracetogether.TraceTogether/AddCovidLocation',
+                request_serializer=tracetogether__pb2.Request.SerializeToString,
+                response_deserializer=tracetogether__pb2.Reply.FromString,
+                )
         self.Test = channel.unary_stream(
                 '/tracetogether.TraceTogether/Test',
                 request_serializer=tracetogether__pb2.Request.SerializeToString,
@@ -101,6 +106,12 @@ class TraceTogetherServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def AddCovidLocation(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def Test(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -142,6 +153,11 @@ def add_TraceTogetherServicer_to_server(servicer, server):
             ),
             'GetStatus': grpc.unary_unary_rpc_method_handler(
                     servicer.GetStatus,
+                    request_deserializer=tracetogether__pb2.Request.FromString,
+                    response_serializer=tracetogether__pb2.Reply.SerializeToString,
+            ),
+            'AddCovidLocation': grpc.unary_unary_rpc_method_handler(
+                    servicer.AddCovidLocation,
                     request_deserializer=tracetogether__pb2.Request.FromString,
                     response_serializer=tracetogether__pb2.Reply.SerializeToString,
             ),
@@ -274,6 +290,23 @@ class TraceTogether(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/tracetogether.TraceTogether/GetStatus',
+            tracetogether__pb2.Request.SerializeToString,
+            tracetogether__pb2.Reply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def AddCovidLocation(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/tracetogether.TraceTogether/AddCovidLocation',
             tracetogether__pb2.Request.SerializeToString,
             tracetogether__pb2.Reply.FromString,
             options, channel_credentials,

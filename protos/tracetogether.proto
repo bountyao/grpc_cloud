@@ -10,6 +10,7 @@ service TraceTogether {
     rpc CheckOut (Request) returns (Reply) {}
     rpc GetLocations (Request) returns (Reply) {}
     rpc GetStatus (Request) returns (Reply) {}
+    rpc AddCovidLocation (Request) returns (Reply) {}
     rpc Test (Request) returns (stream Reply) {}
   }
 
