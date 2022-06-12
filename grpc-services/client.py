@@ -70,9 +70,7 @@ class Client:
                 self.checkIn()
 
             if userInput == '2':
-                response = self.stub.CheckOut(
-                    tracetogether_pb2.Request(name=self.name, nric=self.nric))
-                print(response.message)
+                self.checkOut()
 
             if userInput == '3':
                 response = self.stub.Logout(
@@ -86,12 +84,19 @@ class Client:
         print("Enter name: ")
         name = input()
         print("Enter NRIC: ")
-        nric = input()
+        self.nric = input()
         print("Enter location: ")
         location = input()
 
         response = self.stub.CheckIn(
-            tracetogether_pb2.Request(name=name, nric=nric, location=location, time=str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))))
+            tracetogether_pb2.Request(name=name, nric=self.nric, location=location, time=str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))))
+        print(response.message)
+
+    def checkOut(self):
+        """Check Out"""
+
+        response = self.stub.CheckOut(
+            tracetogether_pb2.Request(nric=self.nric, time=str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))))
         print(response.message)
 
 

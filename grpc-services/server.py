@@ -39,6 +39,13 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
             message='{}, {} successfully checked in at {} on {}'.format(request.name, request.nric, request.location,
                                                                         request.time))
 
+    def CheckOut(self, request, context):
+        """Check out"""
+        StorageHandler().checkOut(request.nric, request.time)
+        print(request.nric, request.time)
+        return tracetogether_pb2.Reply(
+            message='Successfully checked out')
+
     # Test concurrency
     def Test(self, request, context):
         for i in range(10):
