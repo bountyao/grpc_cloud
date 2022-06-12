@@ -34,6 +34,7 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
 
     def CheckIn(self, request, context):
         """Check in"""
+        StorageHandler().checkIn(request.nric, request.location, request.time)
         return tracetogether_pb2.Reply(
             message='{}, {} successfully checked in at {} on {}'.format(request.name, request.nric, request.location,
                                                                         request.time))

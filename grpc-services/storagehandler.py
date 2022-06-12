@@ -7,7 +7,7 @@ from os import path
 
 class StorageHandler:
 
-    def verify(self,name, nric):
+    def verify(self, name, nric):
         """Verify that user exists"""
         if path.exists("../storage/Users/{}.csv".format(nric)):
             return True
@@ -30,6 +30,24 @@ class StorageHandler:
         # Store new dataframe to users.csv file
         user.to_csv('../storage/Users/{}.csv'.format(nric), index=False)
 
+    def checkIn(self, nric, location, time):
+        """Check in with location and time"""
+
+        # Set checked_in to True
+        user = pd.DataFrame(pd.read_csv('../storage/Users/{}.csv'.format(nric)))
+        user.loc[user.nric == nric, 'checked_in'] = True
+
+        # Access linked document
+        documentID = user.documentid.values[0]
+        record = pd.DataFrame(pd.read_csv('../storage/SafeEntryRecords/{}.csv'.format(documentID)))
+
+        # Store location and time
+        checkInDF = {"location": location, "check_in_time": time}
+        record = record.append(checkInDF, ignore_index=True)
+
+        user.to_csv('../storage/Users/{}.csv'.format(nric), index=False)
+        record.to_csv('../storage/SafeEntryRecords/{}.csv'.format(documentID), index=False)
+
     def generateID(self):
         """Generates random ID"""
         id = ''.join(secrets.choice(string.ascii_letters + string.digits) for x in range(20))
@@ -38,7 +56,7 @@ class StorageHandler:
 
 if __name__ == '__main__':
     # For testing
-    print(StorageHandler().verify('Bob','S1234567A'))
+    print(StorageHandler().verify('Bob', 'S1234567A'))
     # print(StorageHandler().generateID())
 
     pass
