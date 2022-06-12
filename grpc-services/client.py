@@ -39,15 +39,18 @@ class Client:
 
     def userInterface(self):
         """User mode"""
+        # TODO: implement login error
         self.login()
         self.dashboard()
 
     def login(self):
         """Login with name and NRIC"""
-        print("Enter name: ")
-        self.name = input()
-        print("Enter NRIC: ")
-        self.nric = input()
+        # print("Enter name: ")
+        # self.name = input()
+        # print("Enter NRIC: ")
+        # self.nric = input()
+
+        self.name, self.nric = 'Bob','S1234567A'
 
         response = self.stub.Login(
             tracetogether_pb2.Request(name=self.name, nric=self.nric))
@@ -57,16 +60,40 @@ class Client:
         """Dashboard to display Covid-19 exposure status and check-in/out"""
 
         while True:
+
             print('1. Check-in\n'
                   '2. Check-out\n'
                   '3. Logout')
             userInput = input()
+
+            if userInput == '1':
+                self.checkIn()
+
+            if userInput == '2':
+                response = self.stub.CheckOut(
+                    tracetogether_pb2.Request(name=self.name, nric=self.nric))
+                print(response.message)
 
             if userInput == '3':
                 response = self.stub.Logout(
                     tracetogether_pb2.Request(name=self.name, nric=self.nric))
                 print(response.message)
                 break
+
+    def checkIn(self):
+        """Check In"""
+
+        print("Enter name: ")
+        name = input()
+        print("Enter NRIC: ")
+        nric = input()
+        print("Enter location: ")
+        location = input()
+
+        response = self.stub.CheckIn(
+            tracetogether_pb2.Request(name=name, nric=nric, location=location, time=str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))))
+        print(response.message)
+
 
     def officerInterface(self):
         # TODO
