@@ -3,7 +3,14 @@ syntax = "proto3";
 package tracetogether;
 
 service TraceTogether {
+    rpc Register (Request) returns (Reply) {}
+    rpc Login (Request) returns (Reply) {}
+    rpc Logout (Request) returns (Reply) {}
     rpc CheckIn (Request) returns (Reply) {}
+    rpc CheckOut (Request) returns (Reply) {}
+    rpc GetLocations (Request) returns (Reply) {}
+    rpc GetStatus (Request) returns (Reply) {}
+    rpc AddCovidLocation (Request) returns (Reply) {}
     rpc Test (Request) returns (stream Reply) {}
   }
 

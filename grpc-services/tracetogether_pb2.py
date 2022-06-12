@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13tracetogether.proto\x12\rtracetogether\"S\n\x07Request\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04nric\x18\x02 \x01(\t\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x0c\n\x04time\x18\x04 \x01(\t\x12\x0c\n\x04test\x18\x05 \x01(\t\"\x18\n\x05Reply\x12\x0f\n\x07message\x18\x01 \x01(\t2\x84\x01\n\rTraceTogether\x12\x39\n\x07\x43heckIn\x12\x16.tracetogether.Request\x1a\x14.tracetogether.Reply\"\x00\x12\x38\n\x04Test\x12\x16.tracetogether.Request\x1a\x14.tracetogether.Reply\"\x00\x30\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13tracetogether.proto\x12\rtracetogether\"S\n\x07Request\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04nric\x18\x02 \x01(\t\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x0c\n\x04time\x18\x04 \x01(\t\x12\x0c\n\x04test\x18\x05 \x01(\t\"\x18\n\x05Reply\x12\x0f\n\x07message\x18\x01 \x01(\t2\xb0\x04\n\rTraceTogether\x12:\n\x08Register\x12\x16.tracetogether.Request\x1a\x14.tracetogether.Reply\"\x00\x12\x37\n\x05Login\x12\x16.tracetogether.Request\x1a\x14.tracetogether.Reply\"\x00\x12\x38\n\x06Logout\x12\x16.tracetogether.Request\x1a\x14.tracetogether.Reply\"\x00\x12\x39\n\x07\x43heckIn\x12\x16.tracetogether.Request\x1a\x14.tracetogether.Reply\"\x00\x12:\n\x08\x43heckOut\x12\x16.tracetogether.Request\x1a\x14.tracetogether.Reply\"\x00\x12>\n\x0cGetLocations\x12\x16.tracetogether.Request\x1a\x14.tracetogether.Reply\"\x00\x12;\n\tGetStatus\x12\x16.tracetogether.Request\x1a\x14.tracetogether.Reply\"\x00\x12\x42\n\x10\x41\x64\x64\x43ovidLocation\x12\x16.tracetogether.Request\x1a\x14.tracetogether.Reply\"\x00\x12\x38\n\x04Test\x12\x16.tracetogether.Request\x1a\x14.tracetogether.Reply\"\x00\x30\x01\x62\x06proto3')
 
 
 
@@ -43,5 +43,5 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _REPLY._serialized_start=123
   _REPLY._serialized_end=147
   _TRACETOGETHER._serialized_start=150
-  _TRACETOGETHER._serialized_end=282
+  _TRACETOGETHER._serialized_end=710
 # @@protoc_insertion_point(module_scope)
