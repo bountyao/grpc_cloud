@@ -13,17 +13,24 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
 
     def Login(self, request, context):
         """Login with name and NRIC"""
-        status = StorageHandler().verify(request.name,request.nric)
+        status = StorageHandler().verify(request.name, request.nric)
         reply = tracetogether_pb2.Reply()
         if status:
+            StorageHandler().login(request.nric)
             reply.message = 'Successfully logged in as {}, {}.'.format(request.name, request.nric)
-
         else:
             reply.message = 'User {}, {} does not exist.'.format(request.name, request.nric)
 
         return reply
 
-            # Check in
+    def Logout(self, request, context):
+        """Logout with name and NRIC"""
+        reply = tracetogether_pb2.Reply()
+
+        StorageHandler().logout(request.nric)
+        reply.message = 'Successfully logged out.'
+
+        return reply
 
     def CheckIn(self, request, context):
         """Check in"""
