@@ -6,12 +6,34 @@ import grpc
 import tracetogether_pb2
 import tracetogether_pb2_grpc
 import time
+from storagehandler import StorageHandler
 
 
 class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
 
-    # Check in
+    def Login(self, request, context):
+        """Login with name and NRIC"""
+        status = StorageHandler().verify(request.name, request.nric)
+        reply = tracetogether_pb2.Reply()
+        if status:
+            StorageHandler().login(request.nric)
+            reply.message = 'Successfully logged in as {}, {}.'.format(request.name, request.nric)
+        else:
+            reply.message = 'User {}, {} does not exist.'.format(request.name, request.nric)
+
+        return reply
+
+    def Logout(self, request, context):
+        """Logout with name and NRIC"""
+        reply = tracetogether_pb2.Reply()
+
+        StorageHandler().logout(request.nric)
+        reply.message = 'Successfully logged out.'
+
+        return reply
+
     def CheckIn(self, request, context):
+        """Check in"""
         return tracetogether_pb2.Reply(
             message='{}, {} successfully checked in at {} on {}'.format(request.name, request.nric, request.location,
                                                                         request.time))
@@ -23,7 +45,6 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
             time.sleep(1)
 
 
-
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     tracetogether_pb2_grpc.add_TraceTogetherServicer_to_server(TraceTogether(), server)
@@ -31,7 +52,6 @@ def serve():
     server.start()
     print("Server is running")
     server.wait_for_termination()
-
 
 
 if __name__ == '__main__':
