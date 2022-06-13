@@ -102,6 +102,15 @@ class Client:
 
     def officerInterface(self):
         # TODO
+        """Log in as MOH Official"""
+        print("Enter Location Affected by COVID: ")
+        affected_location = input()
+        print("Enter DateTime of Visit: YYYY-MM-DD HH:MM:SS ")
+        affected_datetime = input()
+
+        response = self.stub.Official(
+            tracetogether_pb2.Request(affected_location=self.affected_location, affected_datetime=self.affected_datetime))
+        print(response.message)
         pass
 
 

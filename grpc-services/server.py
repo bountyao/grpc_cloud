@@ -46,6 +46,13 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
         return tracetogether_pb2.Reply(
             message='Successfully checked out')
 
+    def Official(self,request,context):
+        """Login as MOH Official"""
+        StorageHandler().official(request.affected_location, request.affected_datetime)
+        return tracetogether_pb2.Reply(
+            message='{} on {}, successfully added to list of affected locations'.format(request.affected_location, 
+                                                                                        request.affected_datetime))
+
     # Test concurrency
     def Test(self, request, context):
         for i in range(10):

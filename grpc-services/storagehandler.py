@@ -69,6 +69,12 @@ class StorageHandler:
         id = ''.join(secrets.choice(string.ascii_letters + string.digits) for x in range(20))
         return id
 
+    def official(self,affected_location,affected_datetime):
+        official = pd.DataFrame(pd.read_csv('../storage/SafeEntryRecords/affected.csv'))
+        affectedDF = {"affected_location": affected_location, "affected_datetime": affected_datetime}
+        official = official.append(affectedDF, ignore_index=True)
+        official.to_csv('../storage/SafeEntryRecords/affected.csv', index=False)
+
 
 if __name__ == '__main__':
     # For testing
