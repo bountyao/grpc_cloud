@@ -42,9 +42,17 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
     def CheckOut(self, request, context):
         """Check out"""
         StorageHandler().checkOut(request.nric, request.time)
-        print(request.nric, request.time)
         return tracetogether_pb2.Reply(
             message='Successfully checked out')
+
+    def GetLocations(self, request, context):
+        """Get SafeEntry location history"""
+        history = StorageHandler().getLocations(request.nric)
+        reply = tracetogether_pb2.Reply()
+        reply.message = history
+
+        return reply
+
 
     # Test concurrency
     def Test(self, request, context):

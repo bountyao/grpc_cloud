@@ -1,7 +1,7 @@
 import pandas as pd
 import string
 import secrets
-import os.path
+from tabulate import tabulate
 from os import path
 
 
@@ -64,6 +64,17 @@ class StorageHandler:
         user.to_csv('../storage/Users/{}.csv'.format(nric), index=False)
         record.to_csv('../storage/SafeEntryRecords/{}.csv'.format(documentID), index=False)
 
+    def getLocations(self, nric):
+        """Get SafeEntry location history"""
+        user = pd.DataFrame(pd.read_csv('../storage/Users/{}.csv'.format(nric)))
+        documentID = user.documentid.values[0]
+        history = pd.DataFrame(pd.read_csv('../storage/SafeEntryRecords/{}.csv'.format(documentID)))
+
+        # Tabulate dataframe
+        history = tabulate(history, headers=history.columns)
+
+        return history
+
     def generateID(self):
         """Generates random ID"""
         id = ''.join(secrets.choice(string.ascii_letters + string.digits) for x in range(20))
@@ -72,8 +83,8 @@ class StorageHandler:
 
 if __name__ == '__main__':
     # For testing
-    #print(StorageHandler().verify('Bob', 'S1234567A'))
+    # print(StorageHandler().verify('Bob', 'S1234567A'))
     # print(StorageHandler().generateID())
-    StorageHandler().checkOut('S1234567A','2022-06-13 04:55:58')
+    StorageHandler().getLocations('S1234567A')
 
     pass
