@@ -46,16 +46,20 @@ class Client:
 
     def login(self):
         """Login with name and NRIC"""
-        # print("Enter name: ")
-        # self.name = input()
-        # print("Enter NRIC: ")
-        # self.nric = input()
+        while True:
+            print("Enter name: ")
+            self.name = input()
+            print("Enter NRIC: ")
+            self.nric = input()
 
-        self.name, self.nric = 'Bob','S1234567A'
+            response = self.stub.Login(
+                tracetogether_pb2.Request(name=self.name, nric=self.nric))
+            print(response.message)
 
-        response = self.stub.Login(
-            tracetogether_pb2.Request(name=self.name, nric=self.nric))
-        print(response.message)
+            if response.status == 200:
+                break
+            elif response.status == 401:
+                continue
 
     def dashboard(self):
         """Dashboard to display Covid-19 exposure status and check-in/out"""
