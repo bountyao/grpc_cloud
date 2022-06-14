@@ -18,8 +18,10 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
         if status:
             StorageHandler().login(request.nric)
             reply.message = 'Successfully logged in as {}, {}.'.format(request.name, request.nric)
+            reply.status = 200
         else:
             reply.message = 'User {}, {} does not exist.'.format(request.name, request.nric)
+            reply.status = 401
 
         return reply
 
@@ -42,11 +44,31 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
     def CheckOut(self, request, context):
         """Check out"""
         StorageHandler().checkOut(request.nric, request.time)
-        print(request.nric, request.time)
         return tracetogether_pb2.Reply(
             message='Successfully checked out')
 
-    def Official(self,request,context):
+    def GetLocations(self, request, context):
+        """Get SafeEntry location history"""
+        history = StorageHandler().getLocations(request.nric)
+        reply = tracetogether_pb2.Reply()
+        reply.message = history
+
+        return reply
+
+    def GetStatus(self, request, context):
+        """Get Covid19 exposure status"""
+        status = StorageHandler().getStatus(request.nric)
+        reply = tracetogether_pb2.Reply()
+
+        if status == False:
+            reply.status = 200
+
+        else:
+            reply.status = 401
+
+        return reply
+
+     def Official(self,request,context):
         """Login as MOH Official"""
         StorageHandler().official(request.affected_location, request.affected_datetime)
         return tracetogether_pb2.Reply(

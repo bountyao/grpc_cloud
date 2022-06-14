@@ -7,6 +7,7 @@ import tracetogether_pb2_grpc
 import datetime
 
 
+
 class Client:
     stub = None
     name = None
@@ -45,16 +46,20 @@ class Client:
 
     def login(self):
         """Login with name and NRIC"""
-        # print("Enter name: ")
-        # self.name = input()
-        # print("Enter NRIC: ")
-        # self.nric = input()
+        while True:
+            print("Enter name: ")
+            self.name = input()
+            print("Enter NRIC: ")
+            self.nric = input()
 
-        self.name, self.nric = 'Bob','S1234567A'
+            response = self.stub.Login(
+                tracetogether_pb2.Request(name=self.name, nric=self.nric))
+            print(response.message)
 
-        response = self.stub.Login(
-            tracetogether_pb2.Request(name=self.name, nric=self.nric))
-        print(response.message)
+            if response.status == 200:
+                break
+            elif response.status == 401:
+                continue
 
     def dashboard(self):
         """Dashboard to display Covid-19 exposure status and check-in/out"""
@@ -63,7 +68,8 @@ class Client:
 
             print('1. Check-in\n'
                   '2. Check-out\n'
-                  '3. Logout')
+                  '3. SafeEntry location history\n'
+                  '4. Logout')
             userInput = input()
 
             if userInput == '1':
@@ -73,6 +79,9 @@ class Client:
                 self.checkOut()
 
             if userInput == '3':
+                self.getLocations()
+
+            if userInput == '4':
                 response = self.stub.Logout(
                     tracetogether_pb2.Request(name=self.name, nric=self.nric))
                 print(response.message)
@@ -99,6 +108,12 @@ class Client:
             tracetogether_pb2.Request(nric=self.nric, time=str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))))
         print(response.message)
 
+    def getLocations(self):
+        """Get all SafeEntry locations"""
+
+        response = self.stub.GetLocations(
+            tracetogether_pb2.Request(nric=self.nric))
+        print(response.message)
 
     def officerInterface(self):
         # TODO
