@@ -7,7 +7,6 @@ import tracetogether_pb2_grpc
 import datetime
 
 
-
 class Client:
     stub = None
     name = None
@@ -15,23 +14,28 @@ class Client:
 
     def __init__(self):
 
-        print('1. Login as user\n'
-              '2. Login as MOH officer\n'
-              '3. Quit')
+        while True:
+            print('1. Register new user\n'
+                  '2. Login as user\n'
+                  '3. Login as MOH officer\n'
+                  '4. Quit')
 
-        userInput = input()
+            userInput = input()
 
-        if userInput == '3':
-            exit(1)
+            if userInput == '4':
+                exit(1)
 
-        with grpc.insecure_channel('localhost:50051') as channel:
-            self.stub = tracetogether_pb2_grpc.TraceTogetherStub(channel)
+            with grpc.insecure_channel('localhost:50051') as channel:
+                self.stub = tracetogether_pb2_grpc.TraceTogetherStub(channel)
 
-            if userInput == '1':
-                self.userInterface()
+                if userInput == '1':
+                    self.register()
 
-            if userInput == '2':
-                self.officerInterface()
+                if userInput == '2':
+                    self.userInterface()
+
+                if userInput == '3':
+                    self.officerInterface()
 
     def run(self):
         responses = self.stub.Test(tracetogether_pb2.Request())
@@ -43,6 +47,23 @@ class Client:
         # TODO: implement login error
         self.login()
         self.dashboard()
+
+    def register(self):
+        """Login with name and NRIC"""
+        while True:
+            print("Enter name: ")
+            self.name = input()
+            print("Enter NRIC: ")
+            self.nric = input()
+
+            response = self.stub.Register(
+                tracetogether_pb2.Request(name=self.name, nric=self.nric))
+            print(response.message)
+
+            if response.status == 200:
+                break
+            elif response.status == 401:
+                continue
 
     def login(self):
         """Login with name and NRIC"""
@@ -98,7 +119,8 @@ class Client:
         location = input()
 
         response = self.stub.CheckIn(
-            tracetogether_pb2.Request(name=name, nric=self.nric, location=location, time=str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))))
+            tracetogether_pb2.Request(name=name, nric=self.nric, location=location,
+                                      time=str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))))
         print(response.message)
 
     def checkOut(self):
@@ -125,7 +147,6 @@ class Client:
         response = self.stub.AddCovidLocation(
             tracetogether_pb2.Request(location=affected_location, time=affected_datetime))
         print(response.message)
-
 
 
 if __name__ == '__main__':

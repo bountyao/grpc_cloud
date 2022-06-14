@@ -3,6 +3,7 @@ import string
 import secrets
 from tabulate import tabulate
 from os import path
+from dateutil import parser
 
 
 class StorageHandler:
@@ -13,6 +14,33 @@ class StorageHandler:
             return True
         else:
             return False
+
+    def register(self, name, nric):
+        """Register new user"""
+
+        duplicate = self.verify('',nric)
+
+        if not duplicate:
+
+            # Generate new ID
+            id = self.generateID()
+
+            # Initialize new dataframes
+            user = pd.DataFrame(
+                {'name': [name], 'nric': [nric], 'logged_in': [False], 'checked_in': [False], 'covid_exposure': [False],
+                 'documentid': [id]})
+            safeentry_record = pd.DataFrame(columns=['location', 'check_in_time', 'check_out_time'])
+
+            # Write to directory
+            user.to_csv('../storage/Users/{}.csv'.format(nric), index=False)
+            safeentry_record.to_csv('../storage/SafeEntryRecords/{}.csv'.format(id), index=False)
+
+            return True
+
+        else:
+            return False
+
+
 
     def login(self, nric):
         """Update logged_in to True"""
@@ -93,18 +121,33 @@ class StorageHandler:
         id = ''.join(secrets.choice(string.ascii_letters + string.digits) for x in range(20))
         return id
 
-    def addCovidLocation(self,location,start_time):
+    def addCovidLocation(self, location, start_time):
         """Add affected location"""
         official = pd.DataFrame(pd.read_csv('../storage/affected.csv'))
         affectedDF = {"affected_location": location, "affected_datetime": start_time}
         official = official.append(affectedDF, ignore_index=True)
-        official.to_csv('../storage/SafeEntryRecords/affected.csv', index=False)
+        official.to_csv('../storage/affected.csv', index=False)
+
+    def updateAffected(self):
+        """Update Covid-19 exposure records"""
+        affected_locations = pd.DataFrame(pd.read_csv('../storage/affected.csv'))
+
+        affected_time = parser.parse(affected_locations.affected_datetime.values[0])
+
+        temptime = parser.parse("2022-01-17 11:10:59")
+
+        diff = temptime - affected_time
+
+        diff = str(diff.seconds)
+
+        print(diff)
 
 
 if __name__ == '__main__':
     # For testing
     # print(StorageHandler().verify('Bob', 'S1234567A'))
     # print(StorageHandler().generateID())
-    StorageHandler().getStatus('S1234567A')
+    #StorageHandler().update()
+    print(StorageHandler().register('Tom', 'S9876543A'))
 
     pass

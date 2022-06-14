@@ -11,6 +11,21 @@ from storagehandler import StorageHandler
 
 class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
 
+    def Register(self, request, context):
+        """Register new user"""
+        status = StorageHandler().register(request.name, request.nric)
+        reply = tracetogether_pb2.Reply()
+
+        if status:
+            reply.message = 'Successfully registered {}, {}.'.format(request.name, request.nric)
+            reply.status = 200
+
+        else:
+            reply.message = 'NRIC {} already exist.'.format(request.nric)
+            reply.status = 401
+
+        return reply
+
     def Login(self, request, context):
         """Login with name and NRIC"""
         status = StorageHandler().verify(request.name, request.nric)
@@ -62,10 +77,8 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
 
         if not status:
             reply.status = 200
-
         else:
             reply.status = 401
-
         return reply
 
     def AddCovidLocation(self, request, context):
