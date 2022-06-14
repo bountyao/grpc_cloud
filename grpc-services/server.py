@@ -60,7 +60,7 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
         status = StorageHandler().getStatus(request.nric)
         reply = tracetogether_pb2.Reply()
 
-        if status == False:
+        if not status:
             reply.status = 200
 
         else:
@@ -68,12 +68,12 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
 
         return reply
 
-     def Official(self,request,context):
-        """Login as MOH Official"""
-        StorageHandler().official(request.affected_location, request.affected_datetime)
+    def AddCovidLocation(self, request, context):
+        """Add Covid-19 location"""
+        StorageHandler().addCovidLocation(request.location, request.time)
         return tracetogether_pb2.Reply(
-            message='{} on {}, successfully added to list of affected locations'.format(request.affected_location, 
-                                                                                        request.affected_datetime))
+            message='{} on {}, successfully added to list of affected locations'.format(request.location,
+                                                                                        request.time))
 
     # Test concurrency
     def Test(self, request, context):
