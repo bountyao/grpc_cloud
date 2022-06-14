@@ -1,7 +1,6 @@
 import pandas as pd
 import string
 import secrets
-from tabulate import tabulate
 from os import path
 from dateutil import parser
 
@@ -97,9 +96,6 @@ class StorageHandler:
         user = pd.DataFrame(pd.read_csv('../storage/Users/{}.csv'.format(nric)))
         documentID = user.documentid.values[0]
         history = pd.DataFrame(pd.read_csv('../storage/SafeEntryRecords/{}.csv'.format(documentID)))
-
-        # Tabulate dataframe
-        history = tabulate(history, headers=history.columns)
 
         return history
 

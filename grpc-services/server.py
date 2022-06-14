@@ -7,6 +7,7 @@ import tracetogether_pb2
 import tracetogether_pb2_grpc
 import time
 from storagehandler import StorageHandler
+from tabulate import tabulate
 
 
 class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
@@ -65,6 +66,7 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
     def GetLocations(self, request, context):
         """Get SafeEntry location history"""
         history = StorageHandler().getLocations(request.nric)
+        history = tabulate(history, headers=history.columns)
         reply = tracetogether_pb2.Reply()
         reply.message = history
 
