@@ -18,8 +18,10 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
         if status:
             StorageHandler().login(request.nric)
             reply.message = 'Successfully logged in as {}, {}.'.format(request.name, request.nric)
+            reply.status = 200
         else:
             reply.message = 'User {}, {} does not exist.'.format(request.name, request.nric)
+            reply.status = 401
 
         return reply
 
