@@ -55,6 +55,19 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
 
         return reply
 
+    def GetStatus(self, request, context):
+        """Get Covid19 exposure status"""
+        status = StorageHandler().getStatus(request.nric)
+        reply = tracetogether_pb2.Reply()
+
+        if status == False:
+            reply.status = 200
+
+        else:
+            reply.status = 401
+
+        return reply
+
 
     # Test concurrency
     def Test(self, request, context):

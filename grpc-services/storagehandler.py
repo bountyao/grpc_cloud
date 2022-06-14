@@ -75,6 +75,19 @@ class StorageHandler:
 
         return history
 
+    def getStatus(self, nric):
+        """Retrieve Covid19 exposure status"""
+        user = pd.DataFrame(pd.read_csv('../storage/Users/{}.csv'.format(nric)))
+        status = user.covid_exposure.values[0]
+
+        print(status)
+
+        if not status:
+            return False
+
+        else:
+            return True
+
     def generateID(self):
         """Generates random ID"""
         id = ''.join(secrets.choice(string.ascii_letters + string.digits) for x in range(20))
@@ -85,6 +98,6 @@ if __name__ == '__main__':
     # For testing
     # print(StorageHandler().verify('Bob', 'S1234567A'))
     # print(StorageHandler().generateID())
-    StorageHandler().getLocations('S1234567A')
+    StorageHandler().getStatus('S1234567A')
 
     pass
