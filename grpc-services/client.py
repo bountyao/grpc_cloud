@@ -137,6 +137,10 @@ class Client:
             tracetogether_pb2.Request(nric=self.nric))
         print(response.message)
 
+        response = self.stub.GetStatus(
+            tracetogether_pb2.Request(nric=self.nric))
+        print(response.message)
+
     def officerInterface(self):
         """Log in as MOH Official"""
         print("Enter Location Affected by COVID: ")

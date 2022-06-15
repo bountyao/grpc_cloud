@@ -74,13 +74,11 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
 
     def GetStatus(self, request, context):
         """Get Covid19 exposure status"""
-        status = StorageHandler().getStatus(request.nric)
+        locations = StorageHandler().checkAffected(request.nric)
         reply = tracetogether_pb2.Reply()
 
-        if not status:
-            reply.status = 200
-        else:
-            reply.status = 401
+        locations = tabulate(locations, headers=locations.columns)
+        reply.message = locations
         return reply
 
     def AddCovidLocation(self, request, context):

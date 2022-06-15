@@ -1,2 +1,2 @@
 name,nric,logged_in,checked_in,covid_exposure,documentid
-Bob,S1234567A,False,False,False,CSQAhycD7UsEPGQR9x6S
+Bob,S1234567A,True,False,False,CSQAhycD7UsEPGQR9x6S

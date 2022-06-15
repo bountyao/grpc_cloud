@@ -17,7 +17,7 @@ class StorageHandler:
     def register(self, name, nric):
         """Register new user"""
 
-        duplicate = self.verify('',nric)
+        duplicate = self.verify('', nric)
 
         if not duplicate:
 
@@ -38,8 +38,6 @@ class StorageHandler:
 
         else:
             return False
-
-
 
     def login(self, nric):
         """Update logged_in to True"""
@@ -124,26 +122,32 @@ class StorageHandler:
         official = official.append(affectedDF, ignore_index=True)
         official.to_csv('../storage/affected.csv', index=False)
 
-    def updateAffected(self):
-        """Update Covid-19 exposure records"""
+    def checkAffected(self, nric):
+        """Check Covid-19 exposure records"""
         affected_locations = pd.DataFrame(pd.read_csv('../storage/affected.csv'))
+        user = pd.DataFrame(pd.read_csv('../storage/Users/{}.csv'.format(nric)))
+        documentID = user.documentid.values[0]
+        history = pd.DataFrame(pd.read_csv('../storage/SafeEntryRecords/{}.csv'.format(documentID)))
 
-        affected_time = parser.parse(affected_locations.affected_datetime.values[0])
+        #Add to exposed locations
+        exposed_locations = []
+        for history_location in history.values:
+            for affected_location in affected_locations.values:
+                if history_location[0] == affected_location[0] and parser.parse(
+                        history_location[1]).date() == parser.parse(affected_location[1]).date():
 
-        temptime = parser.parse("2022-01-17 11:10:59")
+                    exposed_locations.append(history_location)
 
-        diff = temptime - affected_time
+        # Remove duplicates
+        exposed_locations = pd.DataFrame(exposed_locations, columns=['location','check_in_time','check_out_time'])
+        exposed_locations = exposed_locations.sort_values(by='check_in_time')
+        exposed_locations = exposed_locations.drop_duplicates(subset=['location'], keep='last')
 
-        diff = str(diff.seconds)
-
-        print(diff)
+        return(exposed_locations)
 
 
 if __name__ == '__main__':
     # For testing
-    # print(StorageHandler().verify('Bob', 'S1234567A'))
-    # print(StorageHandler().generateID())
-    #StorageHandler().update()
-    print(StorageHandler().register('Tom', 'S9876543A'))
+    StorageHandler().checkAffected('S1234567A')
 
     pass
