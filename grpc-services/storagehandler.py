@@ -3,6 +3,7 @@ import string
 import secrets
 from os import path
 from dateutil import parser
+import datetime
 
 
 class StorageHandler:
@@ -129,21 +130,32 @@ class StorageHandler:
         documentID = user.documentid.values[0]
         history = pd.DataFrame(pd.read_csv('../storage/SafeEntryRecords/{}.csv'.format(documentID)))
 
-        #Add to exposed locations
+        # Add to exposed locations
         exposed_locations = []
         for history_location in history.values:
-            for affected_location in affected_locations.values:
-                if history_location[0] == affected_location[0] and parser.parse(
-                        history_location[1]).date() == parser.parse(affected_location[1]).date():
+            day_difference = (parser.parse(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")).date() - parser.parse(
+                history_location[1]).date()).days
 
-                    exposed_locations.append(history_location)
+            # Only take past 14 days into account
+            if 0 < day_difference <= 14:
+                for affected_location in affected_locations.values:
+                    if history_location[0] == affected_location[0] and parser.parse(
+                            history_location[1]).date() == parser.parse(affected_location[1]).date():
+                        exposed_locations.append(history_location)
 
-        # Remove duplicates
-        exposed_locations = pd.DataFrame(exposed_locations, columns=['location','check_in_time','check_out_time'])
-        exposed_locations = exposed_locations.sort_values(by='check_in_time')
-        exposed_locations = exposed_locations.drop_duplicates(subset=['location'], keep='last')
+        if len(exposed_locations) != 0:
+            # Remove duplicates
+            exposed_locations = pd.DataFrame(exposed_locations, columns=['location', 'check_in_time', 'check_out_time'])
+            exposed_locations = exposed_locations.sort_values(by='check_in_time')
+            exposed_locations = exposed_locations.drop_duplicates(subset=['location'], keep='last')
 
-        return(exposed_locations)
+            # Add 14 days to latest date exposed to Covid-19
+            release_date = (parser.parse(exposed_locations.values[-1][1]) + datetime.timedelta(days=14)).date()
+
+            return exposed_locations, release_date
+
+        else:
+            return (None, None)
 
 
 if __name__ == '__main__':

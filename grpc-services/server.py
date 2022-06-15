@@ -66,19 +66,28 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
     def GetLocations(self, request, context):
         """Get SafeEntry location history"""
         history = StorageHandler().getLocations(request.nric)
-        history = tabulate(history, headers=history.columns)
+        history = tabulate(history, headers=['Location', 'Check-in time', 'Check-out time'],tablefmt="pretty" )
         reply = tracetogether_pb2.Reply()
-        reply.message = history
+        reply.message = history + '\n'
 
         return reply
 
     def GetStatus(self, request, context):
         """Get Covid19 exposure status"""
-        locations = StorageHandler().checkAffected(request.nric)
+        locations, release_date = StorageHandler().checkAffected(request.nric)
         reply = tracetogether_pb2.Reply()
 
-        locations = tabulate(locations, headers=locations.columns)
-        reply.message = locations
+        if locations is not None:
+            locations = tabulate(locations, showindex=False, headers=['Location', 'Check-in time', 'Check-out time'],tablefmt="pretty" )
+            reply.message = '\nDear {}, You have been identified to have some risk of exposure to COVID-19 cases in the ' \
+                            'following locations: \n'.format(request.nric)
+            reply.message = reply.message + locations + '\n'
+            reply.message = reply.message + 'You are strongly encouraged to monitor your health until {}.\n'.format(release_date)
+
+
+        else:
+            reply.message = 'No exposure alerts'
+
         return reply
 
     def AddCovidLocation(self, request, context):

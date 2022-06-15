@@ -90,7 +90,8 @@ class Client:
             print('1. Check-in\n'
                   '2. Check-out\n'
                   '3. SafeEntry location history\n'
-                  '4. Logout')
+                  '4. Check notification\n'
+                  '5. Logout')
             userInput = input()
 
             if userInput == '1':
@@ -103,6 +104,9 @@ class Client:
                 self.getLocations()
 
             if userInput == '4':
+                self.getNotification()
+
+            if userInput == '5':
                 response = self.stub.Logout(
                     tracetogether_pb2.Request(name=self.name, nric=self.nric))
                 print(response.message)
@@ -137,6 +141,8 @@ class Client:
             tracetogether_pb2.Request(nric=self.nric))
         print(response.message)
 
+    def getNotification(self):
+        """Check notifications"""
         response = self.stub.GetStatus(
             tracetogether_pb2.Request(nric=self.nric))
         print(response.message)
