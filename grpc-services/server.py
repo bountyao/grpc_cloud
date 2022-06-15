@@ -79,7 +79,7 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
 
         if locations is not None:
             locations = tabulate(locations, showindex=False, headers=['Location', 'Check-in time', 'Check-out time'],tablefmt="pretty" )
-            reply.message = '\nDear {}, You have been identified to have some risk of exposure to COVID-19 cases in the ' \
+            reply.message = '\nDear {}, You have been identified to have some risk of exposure to COVID-19 cases over the past 14 days in the ' \
                             'following locations: \n'.format(request.nric)
             reply.message = reply.message + locations + '\n'
             reply.message = reply.message + 'You are strongly encouraged to monitor your health until {}.\n'.format(release_date)
