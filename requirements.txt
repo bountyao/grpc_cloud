@@ -1,0 +1,6 @@
+grpc==1.0.0
+grpcio==1.47.0
+pandas==1.4.2
+protobuf==4.21.1
+python_dateutil==2.8.2
+tabulate==0.8.10
