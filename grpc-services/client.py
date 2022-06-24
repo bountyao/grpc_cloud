@@ -57,7 +57,7 @@ class Client:
             self.nric = input()
 
             response = self.stub.Register(
-                tracetogether_pb2.Request(name=self.name, nric=self.nric))
+                tracetogether_pb2.Request(name=self.name.upper(), nric=self.nric))
             print(response.message)
 
             if response.status == 200:
@@ -74,7 +74,7 @@ class Client:
             self.nric = input()
 
             response = self.stub.Login(
-                tracetogether_pb2.Request(name=self.name, nric=self.nric))
+                tracetogether_pb2.Request(name=self.name.upper(), nric=self.nric))
             print(response.message)
 
             if response.status == 200:
