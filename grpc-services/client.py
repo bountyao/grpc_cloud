@@ -11,6 +11,7 @@ class Client:
     stub = None
     name = None
     nric = None
+    checkin_names = None
 
     def __init__(self):
 

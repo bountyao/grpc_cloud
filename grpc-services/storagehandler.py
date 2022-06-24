@@ -11,7 +11,11 @@ class StorageHandler:
     def verify(self, name, nric):
         """Verify that user exists"""
         if path.exists("../storage/Users/{}.csv".format(nric)):
-            return True
+            user = pd.DataFrame(pd.read_csv('../storage/Users/{}.csv'.format(nric)))
+            if user.name.values[0] != name:
+                return False
+            else:
+                return True
         else:
             return False
 
@@ -160,6 +164,6 @@ class StorageHandler:
 
 if __name__ == '__main__':
     # For testing
-    StorageHandler().checkAffected('S1234567A')
+    StorageHandler().verify('BOB','S1234567A')
 
     pass
