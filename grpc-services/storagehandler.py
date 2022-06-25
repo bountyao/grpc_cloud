@@ -132,7 +132,7 @@ class StorageHandler:
                 history_location[1]).date()).days
 
             # Only take past 14 days into account
-            if 0 < day_difference <= 14:
+            if 0 <= day_difference <= 14:
                 for affected_location in affected_locations.values:
                     if history_location[0] == affected_location[0] and parser.parse(
                             history_location[1]).date() == parser.parse(affected_location[1]).date():
