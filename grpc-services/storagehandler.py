@@ -13,25 +13,28 @@ class StorageHandler:
         if path.exists("../storage/Users/{}.csv".format(nric)):
             user = pd.DataFrame(pd.read_csv('../storage/Users/{}.csv'.format(nric)))
             if user.name.values[0] != name:
-                return False
+                return False, "Wrong name entered for {}.".format(nric)
             else:
-                return True
+                return True, ""
         else:
-            return False
+            return False, "NRIC {} does not exist.".format(nric)
 
     def register(self, name, nric):
         """Register new user"""
 
-        duplicate = self.verify('', nric)
+        if path.exists("../storage/Users/{}.csv".format(nric)):
+            duplicateFlag = True
+        else:
+            duplicateFlag = False
 
-        if not duplicate:
+        if not duplicateFlag:
 
             # Generate new ID
             id = self.generateID()
 
             # Initialize new dataframes
             user = pd.DataFrame(
-                {'name': [name], 'nric': [nric], 'logged_in': [False], 'checked_in': [False], 'covid_exposure': [False],
+                {'name': [name], 'nric': [nric], 'logged_in': [False], 'checked_in': [False],
                  'documentid': [id]})
             safeentry_record = pd.DataFrame(columns=['location', 'check_in_time', 'check_out_time'])
 
@@ -42,6 +45,7 @@ class StorageHandler:
             return True
 
         else:
+
             return False
 
     def login(self, nric):
@@ -101,19 +105,6 @@ class StorageHandler:
         history = pd.DataFrame(pd.read_csv('../storage/SafeEntryRecords/{}.csv'.format(documentID)))
 
         return history
-
-    def getStatus(self, nric):
-        """Retrieve Covid19 exposure status"""
-        user = pd.DataFrame(pd.read_csv('../storage/Users/{}.csv'.format(nric)))
-        status = user.covid_exposure.values[0]
-
-        print(status)
-
-        if not status:
-            return False
-
-        else:
-            return True
 
     def generateID(self):
         """Generates random ID"""

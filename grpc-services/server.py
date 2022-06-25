@@ -29,14 +29,14 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
 
     def Login(self, request, context):
         """Login with name and NRIC"""
-        status = StorageHandler().verify(request.name, request.nric)
+        status, errorMsg = StorageHandler().verify(request.name, request.nric)
         reply = tracetogether_pb2.Reply()
         if status:
             StorageHandler().login(request.nric)
             reply.message = 'Successfully logged in as {}, {}.'.format(request.name, request.nric)
             reply.status = 200
         else:
-            reply.message = 'Failed to log in'.format(request.name, request.nric)
+            reply.message = 'Failed to log in. {}'.format(errorMsg)
             reply.status = 401
 
         return reply
@@ -52,16 +52,37 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
 
     def CheckIn(self, request, context):
         """Check in"""
-        StorageHandler().checkIn(request.nric, request.location, request.time)
-        return tracetogether_pb2.Reply(
-            message='{}, {} successfully checked in at {} on {}'.format(request.name, request.nric, request.location,
-                                                                        request.time))
+        reply = tracetogether_pb2.Reply()
+        names = request.name.split(',')
+        nrics = request.nric.split(',')
+
+        #Verify each of the entered names first
+        for i in range(len(names)):
+            status, errorMsg = StorageHandler().verify(names[i].upper().strip(), nrics[i].strip())
+            if not status:
+                reply.message = errorMsg
+                reply.status = 401
+                break
+
+        if status:
+            for i in range(len(names)):
+                StorageHandler().checkIn(nrics[i].strip(), request.location, request.time)
+            reply.message = 'Successfully checked in at {} on {}'.format(request.location,
+                                                                         request.time)
+            reply.status = 200
+
+        return reply
+
 
     def CheckOut(self, request, context):
         """Check out"""
-        StorageHandler().checkOut(request.nric, request.time)
-        return tracetogether_pb2.Reply(
-            message='Successfully checked out')
+        nrics = request.nric.split(',')
+        reply = tracetogether_pb2.Reply()
+        for i in range(len(nrics)):
+            StorageHandler().checkOut(nrics[i].strip(), request.time)
+        reply.message = 'Successfully checked out'
+
+        return reply
 
     def GetLocations(self, request, context):
         """Get SafeEntry location history"""

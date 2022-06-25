@@ -11,7 +11,9 @@ class Client:
     stub = None
     name = None
     nric = None
-    checkin_names = None
+    checkedin_names = None
+    checkedin_nric = None
+    checkedinFlag = False
 
     def __init__(self):
 
@@ -116,24 +118,50 @@ class Client:
     def checkIn(self):
         """Check In"""
 
-        print("Enter name: ")
-        name = input()
-        print("Enter NRIC: ")
-        self.nric = input()
-        print("Enter location: ")
-        location = input()
+        if self.checkedinFlag == True:
+            print('Already checked in . . .')
 
-        response = self.stub.CheckIn(
-            tracetogether_pb2.Request(name=name, nric=self.nric, location=location,
-                                      time=str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))))
-        print(response.message)
+        else:
+
+            while True:
+                print("Enter name (For multiple users, separate with commas): ")
+                self.checkedin_names = input()
+
+                print("Enter NRIC: (For multiple users, separate with commas)")
+                self.checkedin_nric = input()
+
+                if len(self.checkedin_names.split(',')) != len(self.checkedin_nric.split(',')):
+                    print('Please ensure that the total number of NRICs entered corresponds to the number of names')
+                    continue
+                else:
+                    print("Enter location: ")
+                    location = input()
+
+                    response = self.stub.CheckIn(
+                         tracetogether_pb2.Request(name=self.checkedin_names, nric=self.checkedin_nric, location=location,
+                                                   time=str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))))
+                    print(response.message)
+
+                    if response.status == 200:
+                        self.checkedinFlag = True
+                        break
+
+                    elif response.status == 401:
+                        continue
+
 
     def checkOut(self):
         """Check Out"""
 
-        response = self.stub.CheckOut(
-            tracetogether_pb2.Request(nric=self.nric, time=str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))))
-        print(response.message)
+        if self.checkedinFlag == False:
+            print('Already checked out . . .')
+
+        else:
+            self.checkedinFlag = False
+            response = self.stub.CheckOut(
+                tracetogether_pb2.Request(nric=self.checkedin_nric, time=str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))))
+            print(response.message)
+
 
     def getLocations(self):
         """Get all SafeEntry locations"""
