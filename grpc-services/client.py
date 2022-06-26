@@ -191,4 +191,8 @@ class Client:
 
 if __name__ == '__main__':
     logging.basicConfig()
-    Client()
+    try:
+        Client()
+    except:
+        print("SafeEntry server is down.")
+
