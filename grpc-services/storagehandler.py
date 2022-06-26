@@ -4,6 +4,7 @@ import secrets
 from os import path
 from dateutil import parser
 import datetime
+import re
 
 
 class StorageHandler:
@@ -26,27 +27,34 @@ class StorageHandler:
             duplicateFlag = True
         else:
             duplicateFlag = False
-
-        if not duplicateFlag:
-
-            # Generate new ID
-            id = self.generateID()
-
-            # Initialize new dataframes
-            user = pd.DataFrame(
-                {'name': [name], 'nric': [nric], 'logged_in': [False], 'checked_in': [False],
-                 'documentid': [id]})
-            safeentry_record = pd.DataFrame(columns=['location', 'check_in_time', 'check_out_time'])
-
-            # Write to directory
-            user.to_csv('../storage/Users/{}.csv'.format(nric), index=False)
-            safeentry_record.to_csv('../storage/SafeEntryRecords/{}.csv'.format(id), index=False)
-
-            return True
-
+        
+        pattern = '^[STG][0-9]{7,7}[A-Z]$'
+        nric_length = len(nric)
+        if nric_length != 9:
+            return 3
+        elif not re.match(pattern,nric):
+            return 3
         else:
+            if not duplicateFlag:
 
-            return False
+                # Generate new ID
+                id = self.generateID()
+
+                # Initialize new dataframes
+                user = pd.DataFrame(
+                    {'name': [name], 'nric': [nric], 'logged_in': [False], 'checked_in': [False],
+                    'documentid': [id]})
+                safeentry_record = pd.DataFrame(columns=['location', 'check_in_time', 'check_out_time'])
+
+                # Write to directory
+                user.to_csv('../storage/Users/{}.csv'.format(nric), index=False)
+                safeentry_record.to_csv('../storage/SafeEntryRecords/{}.csv'.format(id), index=False)
+
+                return 1
+
+            else:
+
+                return 2
 
     def login(self, nric):
         """Update logged_in to True"""

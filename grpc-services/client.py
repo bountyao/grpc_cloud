@@ -1,11 +1,12 @@
 # client
 
+from ast import pattern
 import logging
 import grpc
 import tracetogether_pb2
 import tracetogether_pb2_grpc
 import datetime
-
+import re
 
 class Client:
     stub = None

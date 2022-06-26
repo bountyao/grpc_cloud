@@ -17,12 +17,16 @@ class TraceTogether(tracetogether_pb2_grpc.TraceTogetherServicer):
         status = StorageHandler().register(request.name, request.nric)
         reply = tracetogether_pb2.Reply()
 
-        if status:
+        if status == 1:
             reply.message = 'Successfully registered {}, {}.'.format(request.name, request.nric)
             reply.status = 200
 
-        else:
+        elif status == 2:
             reply.message = 'NRIC {} already exist.'.format(request.nric)
+            reply.status = 401
+        
+        elif status == 3:
+            reply.message = 'Invalid NRIC format.'
             reply.status = 401
 
         return reply
