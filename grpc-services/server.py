@@ -136,4 +136,7 @@ def serve():
 
 if __name__ == '__main__':
     logging.basicConfig()
-    serve()
+    try:
+        serve()
+    except:
+        print("The server cannot be started. Port is currently in use.")
